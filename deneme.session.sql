@@ -1,0 +1,1 @@
+CREATE TABLE students (name VARCHAR(40));
