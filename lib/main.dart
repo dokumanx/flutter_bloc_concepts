@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<CounterCubit>(
       create: (context) => CounterCubit(),
       child: MaterialApp(
         title: 'Flutter Demo',
