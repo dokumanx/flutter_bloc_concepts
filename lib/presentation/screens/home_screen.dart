@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
 
-import 'second_screen.dart';
-
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title, this.color}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key, this.title, this.color}) : super(key: key);
 
   final String title;
   final Color color;
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,14 +79,9 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 24),
                 MaterialButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SecondScreen(
-                        title: "Second Screen",
-                        color: Colors.red,
-                      ),
-                    ));
+                    Navigator.of(context).pushNamed("/secondScreen");
                   },
-                  child: Text("Go to second screen"),
+                  child: Text("Go to Second Screen"),
                   color: widget.color,
                 ),
               ],
