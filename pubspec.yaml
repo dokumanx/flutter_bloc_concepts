@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   bloc_test: ^7.0.4
+  connectivity_plus: ^0.7.1
   cupertino_icons: ^1.0.0
   equatable: ^1.2.5
   flutter_bloc: ^6.0.5

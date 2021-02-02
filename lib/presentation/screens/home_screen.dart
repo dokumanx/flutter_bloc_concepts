@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_concepts/logic/cubit/counter_cubit.dart';
+import 'package:flutter_bloc_concepts/constants/enums.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/cubit/internet_cubit.dart';
+import '../../logic/cubit/cubit/counter_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title, this.color}) : super(key: key);
@@ -18,76 +20,84 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: BlocConsumer<CounterCubit, CounterState>(
-        listener: (context, state) {
-          if (state.wasIncremented == true) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(
-                content: Text("Incremented"),
-                duration: Duration(milliseconds: 1000),
-              ));
-          }
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BlocBuilder<InternetCubit, InternetState>(
+            builder: (context, state) {
+              if (state is InternetConnected &&
+                  state.connectionType == ConnectionType.Mobile) {
+                return Text(
+                  "Mobile",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3
+                      .copyWith(color: Colors.greenAccent),
+                );
+              } else if (state is InternetConnected &&
+                  state.connectionType == ConnectionType.Wifi) {
+                return Text(
+                  "Wifi",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3
+                      .copyWith(color: Colors.greenAccent),
+                );
+              } else if (state is InternetDisconnected) {
+                return Text(
+                  "Disconnected",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3
+                      .copyWith(color: Colors.redAccent),
+                );
+              }
+              return CircularProgressIndicator();
+            },
+          ),
+          BlocConsumer<CounterCubit, CounterState>(
+            listener: (context, state) {
+              if (state.wasIncremented == true) {
+                Scaffold.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                    content: Text("Incremented"),
+                    duration: Duration(milliseconds: 1000),
+                  ));
+              }
 
-          if (state.wasIncremented == false) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(
-                content: Text("Decremented"),
-                duration: Duration(milliseconds: 1000),
-              ));
-          }
-        },
-        builder: (context, state) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'You have pushed the button this many times:',
-                ),
-                BlocBuilder<CounterCubit, CounterState>(
-                  cubit: BlocProvider.of<CounterCubit>(context),
-                  builder: (context, state) {
-                    return Text(
-                      '${state.counterValue}',
-                      style: Theme.of(context).textTheme.headline4,
-                    );
-                  },
-                ),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FloatingActionButton(
-                        onPressed: () {
-                          BlocProvider.of<CounterCubit>(context).increment();
-                        },
-                        tooltip: "Increment",
-                        heroTag: "increment",
-                        child: Icon(Icons.add)),
-                    FloatingActionButton(
-                        onPressed: () {
-                          BlocProvider.of<CounterCubit>(context).decrement();
-                        },
-                        tooltip: "Decrement",
-                        heroTag: "decrement",
-                        child: Icon(Icons.remove)),
+              if (state.wasIncremented == false) {
+                Scaffold.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                    content: Text("Decremented"),
+                    duration: Duration(milliseconds: 1000),
+                  ));
+              }
+            },
+            builder: (context, state) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'You have pushed the button this many times:',
+                    ),
+                    BlocBuilder<CounterCubit, CounterState>(
+                      cubit: BlocProvider.of<CounterCubit>(context),
+                      builder: (context, state) {
+                        return Text(
+                          '${state.counterValue}',
+                          style: Theme.of(context).textTheme.headline4,
+                        );
+                      },
+                    ),
                   ],
                 ),
-                SizedBox(height: 24),
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed("/secondScreen");
-                  },
-                  child: Text("Go to Second Screen"),
-                  color: widget.color,
-                ),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }
