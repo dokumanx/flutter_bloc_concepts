@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'logic/cubit/counter_cubit.dart';
 import 'presentation/router/app_router.dart';
 
 void main() {
@@ -16,19 +18,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return BlocProvider(
+      create: (context) => CounterCubit(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        onGenerateRoute: _appRouter.onGenerateRoute,
       ),
-      onGenerateRoute: _appRouter.onGenerateRoute,
     );
-  }
-
-  @override
-  void dispose() {
-    _appRouter.dispose();
-    super.dispose();
   }
 }
