@@ -16,88 +16,70 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BlocBuilder<InternetCubit, InternetState>(
-            builder: (context, state) {
-              if (state is InternetConnected &&
-                  state.connectionType == ConnectionType.Mobile) {
-                return Text(
-                  "Mobile",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      .copyWith(color: Colors.greenAccent),
-                );
-              } else if (state is InternetConnected &&
-                  state.connectionType == ConnectionType.Wifi) {
-                return Text(
-                  "Wifi",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      .copyWith(color: Colors.greenAccent),
-                );
-              } else if (state is InternetDisconnected) {
-                return Text(
-                  "Disconnected",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      .copyWith(color: Colors.redAccent),
-                );
-              }
-              return CircularProgressIndicator();
-            },
-          ),
-          BlocConsumer<CounterCubit, CounterState>(
-            listener: (context, state) {
-              if (state.wasIncremented == true) {
-                Scaffold.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(SnackBar(
-                    content: Text("Incremented"),
-                    duration: Duration(milliseconds: 1000),
-                  ));
-              }
+    return BlocListener<InternetCubit, InternetState>(
+      listenWhen: (previousState, currentState) {
+        return previousState != currentState;
+      },
+      listener: (context, state) {
+        if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Wifi) {
+          BlocProvider.of<CounterCubit>(context).increment();
+        } else if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Mobile) {
+          BlocProvider.of<CounterCubit>(context).decrement();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BlocConsumer<CounterCubit, CounterState>(
+              listener: (context, state) {
+                if (state.wasIncremented == true) {
+                  Scaffold.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                      content: Text("Incremented"),
+                      duration: Duration(milliseconds: 1000),
+                    ));
+                }
 
-              if (state.wasIncremented == false) {
-                Scaffold.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(SnackBar(
-                    content: Text("Decremented"),
-                    duration: Duration(milliseconds: 1000),
-                  ));
-              }
-            },
-            builder: (context, state) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'You have pushed the button this many times:',
-                    ),
-                    BlocBuilder<CounterCubit, CounterState>(
-                      cubit: BlocProvider.of<CounterCubit>(context),
-                      builder: (context, state) {
-                        return Text(
-                          '${state.counterValue}',
-                          style: Theme.of(context).textTheme.headline4,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                if (state.wasIncremented == false) {
+                  Scaffold.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                      content: Text("Decremented"),
+                      duration: Duration(milliseconds: 1000),
+                    ));
+                }
+              },
+              builder: (context, state) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'You have pushed the button this many times:',
+                      ),
+                      BlocBuilder<CounterCubit, CounterState>(
+                        cubit: BlocProvider.of<CounterCubit>(context),
+                        builder: (context, state) {
+                          return Text(
+                            '${state.counterValue}',
+                            style: Theme.of(context).textTheme.headline4,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
